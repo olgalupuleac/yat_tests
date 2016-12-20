@@ -321,6 +321,15 @@ class TestConditional():
         ), [],
             None).evaluate(Scope())
 
+    def test_two_elements_in_if_list(self):
+        assert 1 == get_value(Conditional(BinaryOperation(
+            Number(2),
+            '<=',
+            Number(4)
+        ), [Number(8),
+            Number(1)],
+            [Number(0)]).evaluate(Scope()))
+
 
 class TestFunction():
 
@@ -332,13 +341,20 @@ class TestFunction():
         assert 4 == get_value(FunctionCall(FunctionDefinition(
             'foo', foo), []).evaluate(scope))
 
+    def test_two_elements_in_func_body(self):
+        scope = Scope()
+        foo = Function([], [Number(4), Number(-9)])
+        FunctionDefinition('foo', foo).evaluate(scope)
+        assert -9 == get_value(FunctionCall(FunctionDefinition(
+            'foo', foo), []).evaluate(scope))
+
     def test_func_with_args(self):
         assert 12 == get_value(FunctionCall(
             FunctionDefinition('foo',
                                Function(['x'], [
                                    BinaryOperation(
-                                    Reference('x'), '+', Number(5))])), [
-                                    Number(7)]).evaluate(Scope()))
+                                       Reference('x'), '+', Number(5))])), [
+                Number(7)]).evaluate(Scope()))
 
     def test_func_in_func(self):
         scope = Scope()
