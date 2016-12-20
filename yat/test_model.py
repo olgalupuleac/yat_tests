@@ -27,6 +27,11 @@ class TestPrint():
         Print(Reference('x')).evaluate(scope)
         assert sys.stdout.getvalue() == "11\n"
 
+    def test_print_print(self, monkeypatch):
+        monkeypatch.setattr(sys, "stdout", StringIO())
+        Print(Print(Number(5))).evaluate(Scope())
+        assert sys.stdout.getvalue() == "5\n5\n"
+
     def test_get_value(self):
         assert get_value(Print(Number(78)).evaluate(Scope())) == 78
 
@@ -50,12 +55,12 @@ class TestOperations():
         assert sub == 3
 
     def test_neg(self):
-        positive = get_value(UnaryOperation('-', Number(5)).evaluate(Scope()))
-        assert positive == -5
+        pos = get_value(UnaryOperation('-', Number(5)).evaluate(Scope()))
+        assert pos == -5
         zero = get_value(UnaryOperation('-', Number(0)).evaluate(Scope()))
         assert zero == 0
-        negative = get_value(UnaryOperation('-', Number(-9)).evaluate(Scope()))
-        assert negative == 9
+        neg = get_value(UnaryOperation('-', Number(-9)).evaluate(Scope()))
+        assert neg == 9
 
     def test_mult(self):
         mult = get_value(BinaryOperation(Number(7), '*', Number(-2)
